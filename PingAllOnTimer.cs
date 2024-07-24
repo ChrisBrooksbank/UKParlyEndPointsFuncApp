@@ -1,22 +1,18 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace UkParlyEndPointsFuncApp
 {
-    public class PingAll
+    public class PingAllOnTimer
     {
         private IFunctionServices _functionServices;
 
-        [FunctionName("PingAll")]
-        public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log)
+        [FunctionName("PingAllOnTimer")]
+        public async Task Run([TimerTrigger("0 */20 * * * *")]TimerInfo myTimer, ILogger log)
         {
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             try
             {
                 _functionServices = new FunctionServices();
@@ -25,12 +21,10 @@ namespace UkParlyEndPointsFuncApp
                 {
                     log.LogInformation(result);
                 }
-                return new OkObjectResult("PingAll function executed successfully.");
             }
             catch (Exception ex)
             {
                 log.LogError($"error : {ex.Message}");
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
     }
