@@ -17,6 +17,16 @@ namespace UkParlyEndPointsFuncApp
 
         public async Task<List<string>> PingAll()
         {
+            return await PingEndpoints(endpoint => true);
+        }
+
+        public async Task<List<string>> PingNew()
+        {
+            return await PingEndpoints(endpoint => !endpoint.PingStatus.Equals("200"));
+        }
+
+        private async Task<List<string>> PingEndpoints(Func<EndpointData, bool> predicate)
+        {
             try
             {
                 var response = await httpClient.GetStringAsync(GetEndpointsPath);
@@ -25,10 +35,13 @@ namespace UkParlyEndPointsFuncApp
                 var pingResults = new List<string>();
                 foreach (var endpoint in endpointDataList)
                 {
-                    var pingUrl = $"ParliamentEndpoint/endpoints/{endpoint.Id}/ping";
-                    var pingResponse = await httpClient.PostAsync(pingUrl, null);
-                    var result = $"Endpoint {endpoint.Id}: Ping Status {pingResponse.StatusCode}";
-                    pingResults.Add(result);
+                    if (predicate(endpoint))
+                    {
+                        var pingUrl = $"ParliamentEndpoint/endpoints/{endpoint.Id}/ping";
+                        var pingResponse = await httpClient.PostAsync(pingUrl, null);
+                        var result = $"Endpoint {endpoint.Id}: Ping Status {pingResponse.StatusCode}";
+                        pingResults.Add(result);
+                    }
                 }
 
                 return pingResults;
