@@ -5,19 +5,19 @@ using Microsoft.Extensions.Logging;
 
 namespace UkParlyEndPointsFuncApp
 {
-    public class PingAll
+    public class PingNew
     {
         private IFunctionServices _functionServices;
 
-        private const string TimerSchedule = "0 0 6-22 * * 1-6";
+        private const string TimerSchedule = "0 */20 * * * *";
 
-        [FunctionName("PingAll")]
+        [FunctionName("PingNew")]
         public async Task Run([TimerTrigger(TimerSchedule)]TimerInfo myTimer, ILogger log)
         {
             try
             {
                 _functionServices = new FunctionServices();
-                await _functionServices.PingAll();
+                await _functionServices.PingNew();
             }
             catch (Exception ex)
             {
