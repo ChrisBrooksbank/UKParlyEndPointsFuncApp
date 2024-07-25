@@ -13,35 +13,33 @@ namespace UkParlyEndPointsFuncApp
             BaseAddress = new Uri("https://ukparliamentendpoints-services.azurewebsites.net")
         };
         
-        const string GetEndpointsPath = $"ParliamentEndpoint/endpoints?Skip=0&Take=500";
+        const string GetAllEndpointsPath = $"ParliamentEndpoint/endpoints?Skip=0&Take=500";
+        const string GetNewOrFailedEndpointsPath = $"ParliamentEndpoint/endpoints?NewOrFailed=true&Skip=0&Take=500";
 
         public async Task<List<string>> PingAll()
         {
-            return await PingEndpoints(endpoint => true);
+            return await PingEndpoints(GetAllEndpointsPath);
         }
 
         public async Task<List<string>> PingNewOrFailedEndpoints()
         {
-            return await PingEndpoints(endpoint => !endpoint.PingStatus.Equals("200"));
+            return await PingEndpoints(GetNewOrFailedEndpointsPath);
         }
 
-        private async Task<List<string>> PingEndpoints(Func<EndpointData, bool> predicate)
+        private async Task<List<string>> PingEndpoints(string getEndpointsPath)
         {
             try
             {
-                var response = await httpClient.GetStringAsync(GetEndpointsPath);
+                var response = await httpClient.GetStringAsync(getEndpointsPath);
                 var endpointDataList = JsonConvert.DeserializeObject<List<EndpointData>>(response);
 
                 var pingResults = new List<string>();
                 foreach (var endpoint in endpointDataList)
                 {
-                    if (predicate(endpoint))
-                    {
-                        var pingUrl = $"ParliamentEndpoint/endpoints/{endpoint.Id}/ping";
-                        var pingResponse = await httpClient.PostAsync(pingUrl, null);
-                        var result = $"Endpoint {endpoint.Id}: Ping Status {pingResponse.StatusCode}";
-                        pingResults.Add(result);
-                    }
+                    var pingUrl = $"ParliamentEndpoint/endpoints/{endpoint.Id}/ping";
+                    var pingResponse = await httpClient.PostAsync(pingUrl, null);
+                    var result = $"Endpoint {endpoint.Id}: Ping Status {pingResponse.StatusCode}";
+                    pingResults.Add(result);
                 }
 
                 return pingResults;
