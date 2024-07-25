@@ -9,7 +9,7 @@ namespace UkParlyEndPointsFuncApp
     {
         private IFunctionServices _functionServices;
 
-        private const string TimerSchedule = "0 0 6-22 * * 1-6";
+        private const string TimerSchedule =  "0 6 * * 1-5";
 
         [FunctionName("PingAll")]
         public async Task Run([TimerTrigger(TimerSchedule)]TimerInfo myTimer, ILogger log)

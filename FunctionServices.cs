@@ -12,15 +12,15 @@ namespace UkParlyEndPointsFuncApp
         {
             BaseAddress = new Uri("https://ukparliamentendpoints-services.azurewebsites.net")
         };
-
-        const string GetEndpointsPath = $"ParliamentEndpoint/endpoints?Skip=0&Take=100";
+        
+        const string GetEndpointsPath = $"ParliamentEndpoint/endpoints?Skip=0&Take=500";
 
         public async Task<List<string>> PingAll()
         {
             return await PingEndpoints(endpoint => true);
         }
 
-        public async Task<List<string>> PingNew()
+        public async Task<List<string>> PingNewOrFailedEndpoints()
         {
             return await PingEndpoints(endpoint => !endpoint.PingStatus.Equals("200"));
         }
