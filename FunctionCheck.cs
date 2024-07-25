@@ -23,7 +23,14 @@ namespace UkParlyEndPointsFuncApp
             string responseMessage = string.IsNullOrEmpty(name)
                 ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
                 : $"Hello, {name}. This HTTP triggered function executed successfully";
-            return new OkObjectResult(responseMessage);
+            responseMessage += "\n See repo at : <a href=\"https://github.com/ChrisBrooksbank/UKParlyEndPointsFuncApp\">https://github.com/ChrisBrooksbank/UKParlyEndPointsFuncApp</a>";
+
+            return new ContentResult
+            {
+                Content = responseMessage,
+                ContentType = "text/html",
+                StatusCode = 200
+            };
         }
 
     }
