@@ -26,7 +26,7 @@ namespace UkParlyEndPointsFuncApp
             ILogger log)
         {
             await ExecutePingAll(log);
-            return new OkResult();
+            return new OkObjectResult("PingAll executed successfully");
         }
 
         private async Task ExecutePingAll(ILogger log)

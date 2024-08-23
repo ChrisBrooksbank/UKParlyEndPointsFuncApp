@@ -26,7 +26,7 @@ namespace UkParlyEndPointsFuncApp
             ILogger log)
         {
             await ExecutePingNewOrFailed(log);
-            return new OkResult();
+            return new OkObjectResult("PingNewOrFailed executed successfully");
         }
 
         private async Task ExecutePingNewOrFailed(ILogger log)
