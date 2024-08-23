@@ -1,6 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 
 namespace UkParlyEndPointsFuncApp
@@ -9,10 +12,24 @@ namespace UkParlyEndPointsFuncApp
     {
         private IFunctionServices _functionServices;
 
-      private const string TimerSchedule =  "0 6 * *";
+        private const string TimerSchedule = "0 6 * *";
 
         [FunctionName("PingNewOrFailed")]
-        public async Task Run([TimerTrigger(TimerSchedule)]TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger(TimerSchedule)] TimerInfo myTimer, ILogger log)
+        {
+            await ExecutePingNewOrFailed(log);
+        }
+
+        [FunctionName("PingNewOrFailedHttp")]
+        public async Task<IActionResult> RunHttp(
+            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            await ExecutePingNewOrFailed(log);
+            return new OkResult();
+        }
+
+        private async Task ExecutePingNewOrFailed(ILogger log)
         {
             try
             {
