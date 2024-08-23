@@ -11,8 +11,10 @@ namespace UkParlyEndPointsFuncApp
 {
     public static class FunctionCheck
     {
+        private const string TimerSchedule = "*/20 * * * *";
+
         [FunctionName("Check")]
-        public static async Task<IActionResult> Run(
+        public static async Task<IActionResult> RunHttp(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -33,5 +35,21 @@ namespace UkParlyEndPointsFuncApp
             };
         }
 
+        [FunctionName("CheckTimer")]
+        public static async Task RunTimer(
+            [TimerTrigger(TimerSchedule)] TimerInfo myTimer,
+            ILogger log)
+        {
+            await ExecuteCheck(log);
+        }
+
+        private static async Task ExecuteCheck(ILogger log)
+        {
+            string responseMessage = "This timer triggered function executed successfully every 20 minutes.";
+            responseMessage += "\n See repo at : <a href=\"https://github.com/ChrisBrooksbank/UKParlyEndPointsFuncApp\">https://github.com/ChrisBrooksbank/UKParlyEndPointsFuncApp</a>";
+
+            log.LogInformation(responseMessage);
+            await Task.CompletedTask;
+        }
     }
 }
