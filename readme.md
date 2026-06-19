@@ -1,22 +1,47 @@
-﻿# UKParliamentEndPointsFuncs
-Supporting Azure functions for the [UKParliamentEndPoints API](https://ukparliamentendpoints-services.azurewebsites.net/swagger/index.html).
+# UKParlyEndPointsFuncApp
+
+Azure Functions that support the [UKParliamentEndpoints](https://github.com/ChrisBrooksbank/UKParliamentEndpoints) API.
 
 ## Overview
-This project contains Azure Functions designed to interact with the UKParliamentEndPoints API, 
-facilitating automated tasks such as pinging endpoints to ensure they are working.
+
+This project contains .NET 8 Azure Functions that call the UK Parliament Endpoints API to check whether stored endpoint URLs are still responding.
 
 ## Functions
 
 ### FunctionCheck
-[FunctionCheck](https://ukparlyendpointsfuncapp.azurewebsites.net/api/Check?name=ChrisB)
 
-Simple function that returns a check message.
-Triggers with a GET http request.
+Simple HTTP-triggered function that returns a check message.
 
 ### PingNewOrFailed
-Pings parliament endpoints which have never been pinged, or whose last ping was not successful (max of 500)
-Triggers on a timer which fires twice a day, at 10 AM and 4 PM.
+
+Pings Parliament endpoints that have never been checked or whose last ping was not successful, up to a maximum of 500 endpoints.
+
+Triggered on a timer twice a day, at 10 AM and 4 PM.
 
 ### PingAll
-Pings all parliament endpoints (max of 500)
-Triggers on a timer which fires every every week day morning at 5 AM.
+
+Pings all Parliament endpoints, up to a maximum of 500 endpoints.
+
+Triggered on a timer every weekday morning at 5 AM.
+
+## Run locally
+
+Prerequisites:
+
+- .NET 8 SDK
+- Azure Functions Core Tools
+
+```bash
+dotnet restore
+func start
+```
+
+## Build
+
+```bash
+dotnet build UkParlyEndPointsFuncApp.sln
+```
+
+## Configuration
+
+Function app settings should provide the API base URL and any credentials required by the endpoint-checking services. Keep production values in Azure configuration or local development secrets rather than committing them to the repository.
